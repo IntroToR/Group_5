@@ -25,7 +25,8 @@ sumStats<-function(X,...){
 }
 apply(key_crop_yields[,-c(1:3)],2,FUN=sumStats, na.rm=T)
 
-key_crop_yields$Year<-as.factor(key_crop_yields$Year) ## changing Year variable to a factor
+## changing Year variable to a factor
+key_crop_yields$Year<-as.factor(key_crop_yields$Year) 
 
 ##Mean yields by country##
 key_crop_yields %>%
