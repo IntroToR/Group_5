@@ -49,7 +49,7 @@ for (i in 1:length(entities_df$unique_entities)) {
 }
 
 
-# turned the final result into a data frame and coerced the yield to a numeric
+# turned the final result into a data frame and coerced the yield and sd to a numeric
 historical_avg_max_df <- data.frame(historical_avg_max)
 historical_avg_max_df$max_yield <- as.numeric(historical_avg_max_df$max_yield) 
 historical_avg_max_df$sd <- as.numeric(historical_avg_max_df$sd) 
@@ -91,7 +91,7 @@ for (i in 1:length(entities_df$unique_entities)) {
   i <- i + 1
 }
 
-# turned the final result into a data frame and coerced the yield to a numeric
+# turned the final result into a data frame and coerced the yield and sd to a numeric
 avg_maize_df <- data.frame(avg_maize)
 avg_maize_df$avg_yield <- as.numeric(avg_maize_df$avg_yield) 
 avg_maize_df$sd <- as.numeric(avg_maize_df$sd) 
