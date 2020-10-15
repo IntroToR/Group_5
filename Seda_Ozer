@@ -1,5 +1,5 @@
 /* Whole document: */
- body, td {
+ body, td { 
   font-family: serif;
   font-size: 16px;
   font-style:italic;
