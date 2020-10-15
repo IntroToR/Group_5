@@ -1,5 +1,4 @@
 ## Loading in the global crop yield data from tidytuesday ##
-
 install.packages("tidytuesdayR")
 tuesdata <- tidytuesdayR::tt_load('2020-09-01')
 tuesdata <- tidytuesdayR::tt_load(2020, week = 36)
