@@ -83,6 +83,8 @@ ggplot(avg_maize_df2, aes(x=reorder(Entity, avg_yield), y=avg_yield)) +
   labs(x = "Country", y = "Historical Average Yield (tonnes per hectare)") + 
   scale_y_continuous(breaks = seq(0, 40, 5)) 
 ```
+![Grace Tan](/Users/grace/Documents/Grad School Yr 1/R/CPSC_441_personal/Group_5/Figures/Grace_hist_avg_maize.png)
+
 
 From above we became intrigued by the exceptionally large error bars of places like Israel and Jordan.  While it is not surprising that the time span from 1961-2018 has highly variable yields, we wanted to visually map at least one country's crop production over time.  We selected Israel as the largest maize producer, and for it's high standard deviation.
 
@@ -113,7 +115,7 @@ colors_potato<-colorRampPalette(brewer.pal(98,"YlGn"))(98)
   potato_entities <- read.csv("/Users/grace/Documents/Grad School Yr 1/R/CPSC_441_personal/Group_5/Data/potato_graph_data.csv")
 ```
 
-```{r eval = FALSE, dpi=200, fig.height = 6.5, fig.width = 4.7}
+```{r eval = TRUE, dpi=200, fig.height = 6.5, fig.width = 4.7}
 ggplot(potato_entities, aes(x=reorder(Entity, max_yield), y=max_yield)) +
   geom_bar(stat = "identity", fill = colors_potato, color = NA) +
   coord_flip() +
@@ -127,7 +129,7 @@ ggplot(potato_entities, aes(x=reorder(Entity, max_yield), y=max_yield)) +
         axis.title.y = element_text(size=6)) +
   labs(x = "Country", y = "Historical Average Yield (tonnes per hectare)")
 ```
-![Grace Tan](/Users/grace/Documents/Grad School Yr 1/R/CPSC_441_personal/Group_5/Figures/Grace_hist_avg_potato.pdf)
+![Grace Tan](/Users/grace/Documents/Grad School Yr 1/R/CPSC_441_personal/Group_5/Figures/Grace_hist_avg_potato.png)
 
 
 ### Organization and Presentation
