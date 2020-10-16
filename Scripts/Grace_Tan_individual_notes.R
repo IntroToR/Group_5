@@ -77,6 +77,7 @@ colors_potato<-colorRampPalette(brewer.pal(potato_length,"YlGn"))(numcol)
 
 write.csv(potato_entities, "potato_graph_data.csv")
 
+# pdf seems to do better with the long aspect ratio?  so I'll save as both pdf and png
 pdf(file = "/Users/grace/Documents/Grad School Yr 1/R/CPSC_441_personal/Group_5/Figures/Grace_hist_avg_potato.pdf", width = 4.7, height =6.5)
 ggplot(potato_entities, aes(x=reorder(Entity, max_yield), y=max_yield)) +
   geom_bar(stat = "identity", fill = colors_potato, color = NA) +
