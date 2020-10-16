@@ -1,8 +1,10 @@
 ## Loading in the global crop yield data from tidytuesday ##
 install.packages("tidytuesdayR")
+install.packages("RColorBrewer")
 tuesdata <- tidytuesdayR::tt_load('2020-09-01')
 tuesdata <- tidytuesdayR::tt_load(2020, week = 36)
 key_crop_yields <- tuesdata$key_crop_yields
+write.csv(key_crop_yields, "full_key_crop_yields_data.csv")
 range(key_crop_yields$Year) # shows data from 1961-2018
 
 # change year to factor so that numeric calculations will only act upon crop yield data
@@ -11,6 +13,7 @@ key_crop_yields$Year<-as.factor(key_crop_yields$Year)
 library(tidyverse)
 library(dplyr)
 library(ggplot2)
+library(RColorBrewer)
 
 # I am going to try to average all the crops' yields over the entire 1961-2018 period
 # Then I will select what each countries' most product product (on average) is over those years
@@ -64,13 +67,30 @@ unique(historical_avg_max_df$max_crop)
 potato_entities <- historical_avg_max_df %>%
   filter(max_crop == "Potatoes (tonnes per hectare)_fn1") %>%
   arrange(max_yield)
-ggplot(potato_entities, aes(x=reorder(Entity, max_yield), y=max_yield)) +
-  geom_bar(stat = "identity") +
-  geom_errorbar(aes(ymin=max_yield-sd, ymax=max_yield+sd), width=.2, position=position_dodge(.9)) +
-  ggtitle("Average Potato Yield", "1961-2018") +
-  theme(axis.text.x=element_text(angle=45, hjust=1, size = 4)) +
-  labs(x = "Country", y = "Historical Average Yield (tonnes per hectare)")
 
+# removed non-country entities
+potato_entities <- potato_entities[-(c(11,13,19,33,42,61,62,63,77,94,98,99,104,110)), ]
+
+potato_length <- length(potato_entities$max_yield)
+numcol<- potato_length
+colors_potato<-colorRampPalette(brewer.pal(potato_length,"YlGn"))(numcol)
+
+write.csv(potato_entities, "potato_graph_data.csv")
+
+pdf(file = "/Users/grace/Documents/Grad School Yr 1/R/CPSC_441_personal/Group_5/Figures/Grace_hist_avg_potato.pdf", width = 4.7, height =6.5)
+ggplot(potato_entities, aes(x=reorder(Entity, max_yield), y=max_yield)) +
+  geom_bar(stat = "identity", fill = colors_potato, color = NA) +
+  coord_flip() +
+  geom_errorbar(aes(ymin=max_yield-sd, ymax=max_yield+sd), width=.1, position=position_dodge(.9)) +
+  ggtitle("Historical Average Potato Yield (1961-2018)") +
+  theme(axis.text.y=element_text(size = 4),
+        axis.text.x=element_text(size = 4),
+        aspect.ratio=1.8,
+        plot.title = element_text(size = 9),
+        axis.title.x = element_text(size=6),
+        axis.title.y = element_text(size=6)) +
+  labs(x = "Country", y = "Historical Average Yield (tonnes per hectare)")
+dev.off()
 
 
 # But Hannah's graph shows that maize is the most commonly produced crop, so we will graph that too
@@ -96,19 +116,71 @@ avg_maize_df <- data.frame(avg_maize)
 avg_maize_df$avg_yield <- as.numeric(avg_maize_df$avg_yield) 
 avg_maize_df$sd <- as.numeric(avg_maize_df$sd) 
 
-
 # remove NA entities and order from highest maize yield to lowest
 avg_maize_df2 <- avg_maize_df %>% 
   drop_na() %>%
   arrange(desc(avg_yield))
+
+avg_maize_df2 <- avg_maize_df2[-(c(5,13,17,23,31,32,35,36,37,38,48,51,61,62,77,102,103,109,120,127,133,139,142,157,162,164,173,185)), ]
+
+maize_length <- length(avg_maize_df2$avg_yield)
+numcol<- maize_length
+colors_maize<-colorRampPalette(brewer.pal(maize_length,"YlGn"))(numcol)
+
+write.csv(avg_maize_df2, "maize_graph_data.csv")
+
 ggplot(avg_maize_df2, aes(x=reorder(Entity, avg_yield), y=avg_yield)) +
-  geom_bar(stat = "identity") +
-  geom_errorbar(aes(ymin=avg_yield-sd, ymax=avg_yield+sd), width=.2, position=position_dodge(.9)) +
-  ggtitle("Average Maize Yield", "1961-2018") +
-  theme(axis.text.x=element_text(angle=45, hjust=1, size = 4)) +
-  labs(x = "Country", y = "Historical Average Yield (tonnes per hectare)")
+  geom_bar(stat = "identity", fill = colors_maize, color = NA) +
+  coord_flip() +
+  geom_errorbar(aes(ymin=avg_yield-sd, ymax=avg_yield+sd), width=.01, position=position_dodge(.9)) +
+  ggtitle("Historical Average Maize Yield", "1961-2018") +
+  theme(axis.text.y=element_text(size = 3),
+        aspect.ratio=1.75,
+        plot.title = element_text(size = 14),
+        axis.title.x = element_text(size=8),
+        axis.title.y = element_text(size=8)) +
+  labs(x = "Country", y = "Historical Average Yield (tonnes per hectare)") + 
+  scale_y_continuous(breaks = seq(0, 60, 10)) 
+
+# Israel looks interesting
+
+Israel <- filter(key_crop_yields, Entity == "Israel") %>%
+  select(-c("Code", "Rice (tonnes per hectare)", "Soybeans (tonnes per hectare)", "Beans (tonnes per hectare)", "Cassava (tonnes per hectare)", "Cocoa beans (tonnes per hectare)"))
+Israel_cols_all <- names(Israel)
+Israel_cols <- Israel_cols_all[3:8]
+Israel_long <- pivot_longer(Israel, cols = Israel_cols, names_to = "yield")
+
+library(hrbrthemes)
+library(viridis)
+
+ggplot(Israel_long, aes(x = Year, y = value, group = yield, color = yield)) +
+  geom_line() +
+  scale_color_viridis(discrete = TRUE) +
+  ggtitle("Israel Historic Crop Yield", "1961-2018") +
+  labs(x = "Year", y = "Annual Yield (tonnes per hectare)") +
+  theme(legend.position = c(0.1, .85), 
+        legend.title = element_text(size = 0), 
+        legend.text = element_text(size=8), 
+        plot.title = element_text(size = 20),
+        axis.title.x = element_text(vjust=-1.5),
+        axis.title.y = element_text(vjust=2))+
+  scale_x_discrete(breaks = seq(1960, 2020, 5)) +
+  scale_y_continuous(breaks = seq(0, 60, 10)) 
 
 
+i <- 1
+for (i in 1:length(entities_df$unique_entities)) {
+  entity_name <- entities_df[i,1]
+  avg_maize[i,1] <- entity_name
+  
+  entity_i <- filter(key_crop_yields, Entity == entity_name)
+  avg_maize_yield_i <- mean(entity_i$`Maize (tonnes per hectare)`)
+  avg_maize[i,2] <- avg_maize_yield_i
+  maize_sd <- sd(entity_i$`Maize (tonnes per hectare)`)
+  avg_maize[i,3] <- maize_sd
+  
+  i <- i + 1
+}
 
 
 
