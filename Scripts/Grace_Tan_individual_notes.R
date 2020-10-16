@@ -121,6 +121,7 @@ avg_maize_df2 <- avg_maize_df %>%
   drop_na() %>%
   arrange(desc(avg_yield))
 
+# removed non-country entities
 avg_maize_df2 <- avg_maize_df2[-(c(5,13,17,23,31,32,35,36,37,38,48,51,61,62,77,102,103,109,120,127,133,139,142,157,162,164,173,185)), ]
 
 maize_length <- length(avg_maize_df2$avg_yield)
