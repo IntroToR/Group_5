@@ -59,7 +59,7 @@ barplot+scale_x_discrete(labels=croplabs)+
 
 ### Further Analyses
 
-After finding the previous data, we decided to take a close look at maize, the crop that the most entities (212) had produce during this time period.  We selected all 212 countries, and averaged their averaged maize yields over the time period to show the top maize producers, with 1SD error bars.
+After finding the previous data, we decided to take a close look at maize, the crop that the most entities (212) had produce during this time period.  We selected all 212 countries, and averaged their maize yields over the time period to show the top maize producers, with 1SD error bars.
 
 
 ```{r eval = TRUE, include = FALSE}
@@ -84,7 +84,7 @@ ggplot(avg_maize_df2, aes(x=reorder(Entity, avg_yield), y=avg_yield)) +
   scale_y_continuous(breaks = seq(0, 40, 5)) 
 ```
 
-From above we became intrigued by the exceptionally large error bars of places like Israel and Jordan.  While it is not surprising that the time span from 1961-2018 has highly variable yields, we wanted to visually map at least one country's crop production.  We selected Israel as the largest maize producer, and for it's high standard deviation.
+From above we became intrigued by the exceptionally large error bars of places like Israel and Jordan.  While it is not surprising that the time span from 1961-2018 has highly variable yields, we wanted to visually map at least one country's crop production over time.  We selected Israel as the largest maize producer, and for it's high standard deviation.
 
 ```{r eval = FALSE}
 ggplot(Israel_long, aes(x = Year, y = value, group = yield, color = yield)) +
@@ -113,7 +113,7 @@ colors_potato<-colorRampPalette(brewer.pal(98,"YlGn"))(98)
   potato_entities <- read.csv("/Users/grace/Documents/Grad School Yr 1/R/CPSC_441_personal/Group_5/Data/potato_graph_data.csv")
 ```
 
-```{r eval = TRUE, dpi=200, fig.height = 6.5, fig.width = 4.7}
+```{r eval = FALSE, dpi=200, fig.height = 6.5, fig.width = 4.7}
 ggplot(potato_entities, aes(x=reorder(Entity, max_yield), y=max_yield)) +
   geom_bar(stat = "identity", fill = colors_potato, color = NA) +
   coord_flip() +
@@ -127,12 +127,12 @@ ggplot(potato_entities, aes(x=reorder(Entity, max_yield), y=max_yield)) +
         axis.title.y = element_text(size=6)) +
   labs(x = "Country", y = "Historical Average Yield (tonnes per hectare)")
 ```
-
+![Grace Tan](/Users/grace/Documents/Grad School Yr 1/R/CPSC_441_personal/Group_5/Figures/Grace_hist_avg_potato.pdf)
 
 
 ### Organization and Presentation
 
-Now that we know that the potato is the crop that countries have historically produced the most of, we decided that our final figure would be a world map of historical potato production.  The map shows a heat map of potato production, divided into four percentile groups.  
+Now that we know that the potato is the crop that countries have historically produced the most of, we decided that our final figure would be a world heat map of historical potato production, divided into four percentile groups.  
 
 ```{r Sarah, eval = FALSE}
 full_country_buckets <- full_country_df %>%

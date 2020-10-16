@@ -1,5 +1,5 @@
 ---
-title: "map.try3"
+title: "map.widener"
 author: "widener"
 date: "10/15/2020"
 output: pdf_document
@@ -49,6 +49,7 @@ key_crop_cleaned <- key_crop_yields %>%
                          'Code',
                          'Year'),
                names_to = 'Crop') %>%
+    ungroup() %>%
   mutate(Crop = gsub(' \\(tonnes per hectare\\)', '', Crop)) %>%
   filter(Crop == 'Potatoes') %>% 
   mutate(Entity = case_when(Entity == 'Democratic Republic of Congo' ~ 'Democratic Republic of the Congo',
@@ -64,6 +65,7 @@ key_crop_cleaned <- key_crop_yields %>%
                             Entity == 'Brunei' ~ 'Brunei Darussalam',
                             TRUE ~ Entity))
 ```
+
 
 #Remove countries w/o data for our crops of interest (no potato)
 ```{r}
@@ -84,7 +86,7 @@ na_countries <- key_crop_cleaned %>%
   inner_join(world,
              by = c('Entity' = 'name_long'))
 
-na_null_countries <- bind_rows(null_countries, na_countries)
+#na_null_countries <- ...(null_countries, na_countries)
 
 percentile_countries <- key_crop_cleaned %>%
   dplyr::select(Entity,
@@ -96,12 +98,12 @@ percentile_countries <- key_crop_cleaned %>%
 
 
 full_country_df <-
-  bind_rows(percentile_countries, na_null_countries)
+  bind_rows(percentile_countries, null_countries, null_countries)
 
 full_country_buckets <- full_country_df %>%
   mutate(Buckets = ifelse(
     Crop_Percentile == 0,
-    'Did not Produce',
+    'NA',
     ifelse(
       Crop_Percentile > 0 & Crop_Percentile <= 0.25,
       '1-25th',
@@ -120,37 +122,36 @@ full_country_buckets <- full_country_df %>%
 
 full_country_buckets$Buckets <-
   factor(full_country_buckets$Buckets, levels = unique(c(
-    'Did not Produce', '1-25th', '25-50th', '50-75th', '75-100th'
+    'NA', '1-25th', '25-50th', '50-75th', '75-100th'
   )))
 ```
 
 # make the actual map!!!
 ```{r}
 ggplot(full_country_buckets) +
-  geom_sf(aes(geometry = geounit, 
+  geom_sf(aes(geometry = geom, 
               fill = Buckets),
-          color = 'white',
+          color = 'black',
           size = 0.2) +
   geom_sf(data = subset(full_country_buckets, Crop_Percentile >= 0.9),
-          mapping = aes(geometry = geounit,
+          mapping = aes(geometry = geom,
                         fill = Buckets),
           color = 'black',
-          size = 0.5) +
-  labs(title = 'Which Countries Yield the Most Potatos?',
-       subtitle = 'Yields grouped by percentiles. Countries within the 90th Percentile are highlighted in black.',
-       caption = 'nSouce: Our World in Data',
+          size = 0.3) +
+  labs(title = 'Potato Yields Around the World',
+       caption = 'Souces: Tidytuesday & Our World in Data',
        fill = 'Percentile:') +
-  scale_fill_manual(values = c('#949494', '#ffcba7', '#fb9567', '#e95d33', '#d10000')) +
-  theme(plot.title = element_text(face = 'bold', size = 18, family = 'Arial'),
+  scale_fill_manual(values = c('white', 'yellow2', 'yellow3', 'yellow3', 'yellowgreen')) +
+  theme(plot.title = element_text(face = 'bold', size = 25),
         legend.position = 'top',
-        legend.text = element_text(size = 12, family = 'Arial'),
-        legend.title = element_text(size = 12, family = 'Arial'),
-        plot.subtitle = element_text(size = 15, family = 'Arial'),
-        plot.caption = element_text(size = 12, family = 'Arial'),
+        legend.text = element_text(size = 10),
+        legend.title = element_text(size = 10),
+        plot.subtitle = element_text(size = 10),
+        plot.caption = element_text(size = 10),
         axis.title = element_blank(),
         axis.ticks = element_blank(),
         axis.text = element_blank(),
-        strip.text = ggplot2::element_text(size = 12, hjust = 0, face = 'bold', color = 'black', family = 'Arial'),
+        strip.text = ggplot2::element_text(size = 12, hjust = 0, face = 'bold', color = 'black'),
         strip.background = element_rect(fill = NA),
         panel.background = ggplot2::element_blank(),
         axis.line = element_blank(),
@@ -160,6 +161,4 @@ ggplot(full_country_buckets) +
 ```
 
 
-```{r}
 
-```

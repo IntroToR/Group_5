@@ -1,23 +1,39 @@
 /* Whole document: */
  body, td {
-  font-family: serif;
-  font-size: 16px;
-  font-style:italic;
-  font-weight: bold;
-  color: blue;
-  background-color: gray;
-  border: 3px solid red;
-  border-radius: 25px;
-  border-image: 30 round
+  font-family: "Trebuchet MS", Helvetica, sans-serif;
+  font-size: 14px;
+  font-weight: normal;
+  color: white;
+  background-color: #606665;
+  border: 15px solid green;
+  border-radius: 10px;
 }  
 
 
 /* Headers */
-h1,h2,h3,h4,h5,h6{
-  font-size: 20pt;
-  color: orange;
+h1{
+  text-align: center;
+  font-size: 28pt;
+  color: white;
   font-weight: bold;
-  font-family: consolas; 
+  font-family: "Trebuchet MS", Helvetica, sans-serif; 
   font-style:normal
 } 
-  
+
+h4{ /* Header 4 - and the author and data headers use this too  */
+text-align: center;
+  font-size: 18pt;
+  color: white;
+  font-family: "Trebuchet MS", Helvetica, sans-serif; 
+  font-style: normal
+}
+
+
+h2,h3,h5,h6{
+  font-size: 17pt;
+  color: white;
+  font-weight: normal;
+  font-family: "Trebuchet MS", Helvetica, sans-serif; 
+  font-style:normal;
+  text-decoration: underline green
+} 
