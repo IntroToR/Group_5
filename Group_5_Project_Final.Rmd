@@ -1,0 +1,123 @@
+---
+title: "CPSC 441 Group 5 Project"
+author: "Hannah Demler, Seda Ozer, Grace Tan, Sarah Widener"
+date: "10/16/2020"
+output: 
+  html_document: 
+    highlight: haddock
+    css: Scripts/Seda_Ozer.css
+---
+
+```{r setup, include=FALSE,}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::include_graphics("Figures/Hannah_country_crop_count_barplot.png")
+
+getwd()
+```
+
+
+```{r data, eval = FALSE}
+tuesdata <- tidytuesdayR::tt_load('2020-09-01')
+tuesdata <- tidytuesdayR::tt_load(2020, week = 36)
+key_crop_yields <- tuesdata$key_crop_yields
+```
+
+
+## Preliminary Analysis
+
+How many countries grow each crop in our data set?
+
+```{r Hannah, eval = FALSE}
+### plot showing number of countries that produce each crop forming the barplot
+barplot<- cropcounts%>%
+  mutate(crop=fct_reorder(crop,`Number of producing entities`))%>%
+  ggplot(aes(x=crop,y=`Number of producing entities`),show.legend=FALSE)+
+  geom_bar(colour="black",stat="identity",aes(fill=as.factor(crop)),width=0.7,show.legend=FALSE)+
+  coord_flip()+
+  xlab("Crop")+
+  ylab("Number of Countries Producing Crop")+
+  expand_limits(y=c(0,225))
+
+###Adjusting labels and creating colors to fill bars
+croplabs<- c("Cocoa beans","Cassava","Peas","Soybeans","Barley","Rice","Wheat","Bananas","Beans","Potatoes","Maize")
+numcol<- 11
+colors<-colorRampPalette(brewer.pal(9,"YlGn"))(numcol)
+
+###Formatting barplot with axis labels, title, colors, and theme. Also added data labels to show value next to bars
+barplot+scale_x_discrete(labels=croplabs)+
+  ggtitle("Global Production of Major Crops 1961-2018")+
+  scale_fill_manual(values=colors)+
+  theme_classic()+
+  theme(panel.background = element_rect(fill="gray96"),axis.text = element_text(size=12),axis.title=element_text(size=13.5))+
+  geom_text(aes(label=cropcounts$`Number of producing entities`),color="gray40",hjust=-.2)
+```
+
+![Hannah Demler](/Users/grace/Documents/Grad School Yr 1/R/CPSC_441_personal/Group_5/Figures/Hannah_country_crop_count_barplot.png)
+
+## Averages and Statistical Analyses
+
+
+
+## Organization and Presentation
+
+Now that we know the potato is the crop that countries have historically produced the most of, we decided that our final figure would be a world map of historical potato production.  
+
+```{r Sarah, eval = FALSE}
+full_country_buckets <- full_country_df %>%
+  mutate(Buckets = ifelse(
+    Crop_Percentile == 0,
+    'NA',
+    ifelse(
+      Crop_Percentile > 0 & Crop_Percentile <= 0.25,
+      '1-25th',
+      ifelse(
+        Crop_Percentile > 0.25 & Crop_Percentile <= 0.5,
+        '25-50th',
+        ifelse(
+          Crop_Percentile > 0.5 & Crop_Percentile <= 0.75,
+          '50-75th',
+          ifelse(Crop_Percentile > 0.75 &
+                   Crop_Percentile <= 1, '75-100th', NA)
+        )
+      )
+    )
+  ))
+
+ggplot(full_country_buckets) +
+  geom_sf(aes(geometry = geom, 
+              fill = Buckets),
+          color = 'black',
+          size = 0.2) +
+  geom_sf(data = subset(full_country_buckets, Crop_Percentile >= 0.9),
+          mapping = aes(geometry = geom,
+                        fill = Buckets),
+          color = 'black',
+          size = 0.3) +
+  labs(title = 'Potato Yields Around the World',
+       caption = 'Souces: Tidytuesday & Our World in Data',
+       fill = 'Percentile:') +
+  scale_fill_manual(values = c('white', 'yellow2', 'yellow3', 'yellow3', 'yellowgreen')) +
+  theme(plot.title = element_text(face = 'bold', size = 25),
+        legend.position = 'top',
+        legend.text = element_text(size = 10),
+        legend.title = element_text(size = 10),
+        plot.subtitle = element_text(size = 10),
+        plot.caption = element_text(size = 10),
+        axis.title = element_blank(),
+        axis.ticks = element_blank(),
+        axis.text = element_blank(),
+        strip.text = ggplot2::element_text(size = 12, hjust = 0, face = 'bold', color = 'black'),
+        strip.background = element_rect(fill = NA),
+        panel.background = ggplot2::element_blank(),
+        axis.line = element_blank(),
+        panel.grid.major.y = element_blank(),
+        panel.grid.major.x = element_blank()
+  ) 
+```
+
+![Sarah Widener](/Users/grace/Documents/Grad School Yr 1/R/CPSC_441_personal/Group_5/Figures/Sarah_Potato_Yields_Map.png)
+
+And we shared our final figure with the TidyTuesday hashtag on twitter!
+
+![Sarah Widener](/Users/grace/Documents/Grad School Yr 1/R/CPSC_441_personal/Group_5/Figures/Sarah_tweet.png)
+

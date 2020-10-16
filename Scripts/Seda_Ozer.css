@@ -1,0 +1,23 @@
+/* Whole document: */
+ body, td {
+  font-family: serif;
+  font-size: 16px;
+  font-style:italic;
+  font-weight: bold;
+  color: blue;
+  background-color: gray;
+  border: 3px solid red;
+  border-radius: 25px;
+  border-image: 30 round
+}  
+
+
+/* Headers */
+h1,h2,h3,h4,h5,h6{
+  font-size: 20pt;
+  color: orange;
+  font-weight: bold;
+  font-family: consolas; 
+  font-style:normal
+} 
+  
